@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiDiabetes360 🧠❤️</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <h1>MiDiabetes360 🧠❤️</h1>
+    <p>Tu compañero diario para controlar la diabetes con estilo y precisión</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Registrar Nivel de Glucosa</h2>
+      <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
+      <textarea id="notes" placeholder="¿Cómo te sientes hoy? ¿Qué comiste?"></textarea>
+      <button onclick="addLog()">Guardar Registro</button>
+    </section>
+
+    <section class="card">
+      <h2>Seguimiento de Glucosa</h2>
+      <canvas id="glucoseChart" height="100"></canvas>
+    </section>
+
+    <section class="card">
+      <h2>Historial de Registros</h2>
+      <div id="history"></div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
