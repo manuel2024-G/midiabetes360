@@ -1,3 +1,4 @@
+
 let log = JSON.parse(localStorage.getItem('glucoseLog')) || [];
 
 document.getElementById('meal').addEventListener('change', (e) => {
@@ -77,7 +78,8 @@ function renderLog() {
 }
 
 function renderChart() {
-  const ctx = document.getElementById('glucoseChart').getContext('2d');
+  const canvas = document.getElementById('glucoseChart');
+  const ctx = canvas.getContext('2d');
   if (window.glucoseChart) window.glucoseChart.destroy();
   window.glucoseChart = new Chart(ctx, {
     type: 'line',
@@ -96,6 +98,9 @@ function renderChart() {
       plugins: {
         legend: { display: true },
         title: { display: false }
+      },
+      scales: {
+        y: { beginAtZero: false }
       }
     }
   });

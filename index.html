@@ -15,9 +15,8 @@
 
   <main>
     <section class="card">
-      <h2>Registrar Nivel de Glucosa</h2>
-      <div class="glucose-row">
-        <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
+      <h2>¿Cuál es tu nivel de glucosa de hoy?</h2>
+      <div class="mobile-stack">
         <div class="reference">
           <strong>Referencia:</strong>
           <ul>
@@ -26,6 +25,7 @@
             <li>🚨 Alto: 126+ mg/dL</li>
           </ul>
         </div>
+        <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
       </div>
 
       <label>¿Cómo te sientes?</label>
@@ -65,7 +65,7 @@
 
     <section class="card">
       <h2>Seguimiento de Glucosa</h2>
-      <canvas id="glucoseChart" height="100"></canvas>
+      <canvas id="glucoseChart" height="100" style="width: 100%;"></canvas>
     </section>
 
     <section class="card">

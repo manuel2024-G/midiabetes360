@@ -57,18 +57,25 @@ button {
 button:hover {
   background-color: #133366;
 }
-#history .entry {
+.mobile-stack {
+  display: flex;
+  flex-direction: column;
+}
+.reference {
+  background: #eef2f7;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+.entry {
   border-top: 1px solid #ddd;
   padding: 10px 0;
   position: relative;
 }
 .entry strong {
   color: #0a1f44;
-}
-.entry p {
-  margin: 4px 0;
-  font-size: 0.95rem;
-  color: #555;
 }
 .entry .status {
   display: inline-block;
@@ -88,21 +95,6 @@ button:hover {
 .status-alto {
   background-color: #f8d7da;
   color: #721c24;
-}
-.glucose-row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-}
-.glucose-row input {
-  flex: 1;
-}
-.reference {
-  background: #eef2f7;
-  padding: 10px;
-  border-radius: 8px;
-  font-size: 0.9rem;
-  color: #333;
 }
 .delete-btn {
   position: absolute;
