@@ -10,14 +10,56 @@
 <body>
   <header>
     <h1>MiDiabetes360 🧠❤️</h1>
-    <p>Tu compañero diario para controlar la diabetes con estilo y precisión</p>
+    <p>Tu médico digital diario para entender tu salud y tus hábitos</p>
   </header>
 
   <main>
     <section class="card">
       <h2>Registrar Nivel de Glucosa</h2>
-      <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
-      <textarea id="notes" placeholder="¿Cómo te sientes hoy? ¿Qué comiste?"></textarea>
+      <div class="glucose-row">
+        <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
+        <div class="reference">
+          <strong>Referencia:</strong>
+          <ul>
+            <li>Normal: 70 - 99 mg/dL</li>
+            <li>Alerta: 100 - 125 mg/dL</li>
+            <li>Alto: 126+ mg/dL</li>
+          </ul>
+        </div>
+      </div>
+
+      <label>¿Cómo te sientes?</label>
+      <select id="feeling">
+        <option value="muy bien">Muy bien</option>
+        <option value="regular">Regular</option>
+        <option value="con dolor de cabeza">Con dolor de cabeza</option>
+        <option value="alterado y corazón agitado">Alterado y corazón agitado</option>
+        <option value="con sueño y decaído">Con sueño y decaído</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="feeling-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+      <label>¿Qué comiste recientemente?</label>
+      <select id="meal">
+        <option value="arepa con queso">Arepa con queso</option>
+        <option value="arroz con pollo">Arroz con pollo</option>
+        <option value="pan dulce o pastel">Pan dulce o pastel</option>
+        <option value="fruta natural">Fruta natural</option>
+        <option value="ensalada">Ensalada</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="meal-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+      <label>Actividad reciente</label>
+      <select id="activity">
+        <option value="sedentario">Sedentario (reposo)</option>
+        <option value="caminar">Caminar</option>
+        <option value="ejercicio moderado">Ejercicio moderado</option>
+        <option value="estrés emocional">Estrés emocional</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="activity-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
       <button onclick="addLog()">Guardar Registro</button>
     </section>
 

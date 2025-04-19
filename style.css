@@ -21,7 +21,7 @@ header p {
   color: #cfd8e3;
 }
 main {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 30px auto;
   padding: 0 20px;
 }
@@ -35,7 +35,7 @@ main {
 h2 {
   color: #0a1f44;
 }
-input, textarea {
+input, textarea, select {
   width: 100%;
   padding: 12px;
   margin-top: 10px;
@@ -71,4 +71,19 @@ button:hover {
   margin: 4px 0;
   font-size: 0.95rem;
   color: #555;
+}
+.glucose-row {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+.glucose-row input {
+  flex: 1;
+}
+.reference {
+  background: #eef2f7;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #333;
 }

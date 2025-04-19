@@ -1,24 +1,42 @@
 let log = JSON.parse(localStorage.getItem('glucoseLog')) || [];
 
-function addLog() {
-  const glucoseInput = document.getElementById('glucose');
-  const notesInput = document.getElementById('notes');
-  const glucose = parseInt(glucoseInput.value);
-  const notes = notesInput.value;
+document.getElementById('meal').addEventListener('change', (e) => {
+  document.getElementById('meal-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+});
+document.getElementById('feeling').addEventListener('change', (e) => {
+  document.getElementById('feeling-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+});
+document.getElementById('activity').addEventListener('change', (e) => {
+  document.getElementById('activity-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+});
 
+function addLog() {
+  const glucose = parseInt(document.getElementById('glucose').value);
   if (!glucose) return alert('Por favor, ingresa tu nivel de glucosa.');
+
+  const feeling = document.getElementById('feeling').value === 'otro'
+    ? document.getElementById('feeling-other').value
+    : document.getElementById('feeling').value;
+
+  const meal = document.getElementById('meal').value === 'otro'
+    ? document.getElementById('meal-other').value
+    : document.getElementById('meal').value;
+
+  const activity = document.getElementById('activity').value === 'otro'
+    ? document.getElementById('activity-other').value
+    : document.getElementById('activity').value;
 
   const entry = {
     id: Date.now(),
     glucose,
-    notes,
+    feeling,
+    meal,
+    activity,
     timestamp: new Date().toLocaleString()
   };
 
   log.push(entry);
   localStorage.setItem('glucoseLog', JSON.stringify(log));
-  glucoseInput.value = '';
-  notesInput.value = '';
   renderLog();
   renderChart();
 }
@@ -32,7 +50,9 @@ function renderLog() {
     div.innerHTML = `
       <strong>${entry.timestamp}</strong><br>
       Glucosa: <span>${entry.glucose} mg/dL</span><br>
-      ${entry.notes ? `<p>"${entry.notes}"</p>` : ''}
+      Estado: ${entry.feeling}<br>
+      Comida reciente: ${entry.meal}<br>
+      Actividad: ${entry.activity}
     `;
     history.appendChild(div);
   });
