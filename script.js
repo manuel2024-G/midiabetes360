@@ -17,6 +17,19 @@ function getStatus(glucose) {
   return { class: 'status-alto', text: '🚨 Nivel alto, consulte a su médico' };
 }
 
+function clearForm() {
+  document.getElementById('glucose').value = '';
+  document.getElementById('feeling').value = 'muy bien';
+  document.getElementById('meal').value = 'arepa con queso';
+  document.getElementById('activity').value = 'sedentario';
+  document.getElementById('feeling-other').value = '';
+  document.getElementById('meal-other').value = '';
+  document.getElementById('activity-other').value = '';
+  document.getElementById('feeling-other').style.display = 'none';
+  document.getElementById('meal-other').style.display = 'none';
+  document.getElementById('activity-other').style.display = 'none';
+}
+
 function addLog() {
   const glucose = parseInt(document.getElementById('glucose').value);
   if (!glucose) return alert('Por favor, ingresa tu nivel de glucosa.');
@@ -46,6 +59,7 @@ function addLog() {
   localStorage.setItem('glucoseLog', JSON.stringify(log));
   renderLog();
   renderChart();
+  clearForm();
 }
 
 function deleteEntry(id) {
@@ -79,6 +93,7 @@ function renderLog() {
 
 function renderChart() {
   const canvas = document.getElementById('glucoseChart');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   if (window.glucoseChart) window.glucoseChart.destroy();
   window.glucoseChart = new Chart(ctx, {
@@ -95,6 +110,7 @@ function renderChart() {
     },
     options: {
       responsive: true,
+      maintainAspectRatio: false,
       plugins: {
         legend: { display: true },
         title: { display: false }
