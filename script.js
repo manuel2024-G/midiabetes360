@@ -59,6 +59,7 @@ function addLog() {
   localStorage.setItem('glucoseLog', JSON.stringify(log));
   renderLog();
   renderChart();
+  renderAverage();
   clearForm();
 }
 
@@ -68,6 +69,7 @@ function deleteEntry(id) {
     localStorage.setItem('glucoseLog', JSON.stringify(log));
     renderLog();
     renderChart();
+    renderAverage();
   }
 }
 
@@ -124,6 +126,28 @@ function renderChart() {
   });
 }
 
+function renderAverage() {
+  const avgBox = document.getElementById("glucometer");
+  const recBox = document.getElementById("recommendation");
+  if (log.length === 0) {
+    avgBox.textContent = "Promedio de Glucosa: -- mg/dL";
+    recBox.textContent = "";
+    return;
+  }
+
+  const sum = log.reduce((acc, e) => acc + e.glucose, 0);
+  const avg = Math.round(sum / log.length);
+  avgBox.textContent = `Promedio de Glucosa: ${avg} mg/dL`;
+
+  if (avg <= 99) {
+    recBox.innerHTML = "<strong>Recomendaciones:</strong> Mantén una dieta balanceada, realiza caminatas diarias, sigue hidratado, y realiza chequeos regulares.";
+  } else if (avg <= 125) {
+    recBox.innerHTML = "<strong>Recomendaciones:</strong> Reduce carbohidratos simples, haz ejercicios cardiovasculares moderados, y considera infusiones naturales como canela o jengibre.";
+  } else {
+    recBox.innerHTML = "<strong>Recomendaciones:</strong> Consulta a tu médico. Puede requerirse insulina o medicación. Evita azúcares, haz ejercicio leve y revisa tus niveles con frecuencia.";
+  }
+}
+
 function exportPDF() {
   const canvas = document.getElementById('glucoseChart');
   const imgData = canvas.toDataURL('image/png');
@@ -136,3 +160,4 @@ function exportPDF() {
 
 renderLog();
 renderChart();
+renderAverage();

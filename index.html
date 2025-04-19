@@ -66,19 +66,13 @@
       <h2>Seguimiento de Glucosa</h2>
       <canvas id="glucoseChart" height="300"></canvas>
       <button onclick="exportPDF()">📄 Descargar PDF</button>
+      <div id="glucometer" class="glucometer-box">Promedio de Glucosa: -- mg/dL</div>
+      <div id="recommendation" class="recommendation-box"></div>
     </section>
 
     <section class="card">
       <h2>Historial de Registros</h2>
       <div id="history"></div>
-    </section>
-
-    <section class="card">
-      <h2>Tipos de Pruebas de Glucosa</h2>
-      <img src="https://i.ibb.co/xC17nkp/diabetes-glucose-types.jpg" alt="Tipos de pruebas de glucosa" style="max-width: 100%; border-radius: 10px;">
-      <p style="font-size: 0.9rem; margin-top: 10px;">
-        Fasting Glucose · Glucose Tolerance · Postprandial Glucose · Random Glucose
-      </p>
     </section>
   </main>
 

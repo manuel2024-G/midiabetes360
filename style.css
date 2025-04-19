@@ -98,3 +98,23 @@ button:hover {
 #glucoseChart {
   max-height: 300px;
 }
+.glucometer-box {
+  background-color: #f6f9fc;
+  border-left: 8px solid #0a1f44;
+  padding: 15px 20px;
+  border-radius: 12px;
+  margin-top: 20px;
+  font-size: 1.3rem;
+  font-weight: bold;
+  text-align: center;
+  color: #0a1f44;
+}
+.recommendation-box {
+  background: #eaf2ff;
+  border-left: 6px solid #1e6ae1;
+  padding: 12px 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  color: #1a1a1a;
+  font-size: 0.95rem;
+}
