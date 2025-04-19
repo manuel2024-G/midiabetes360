@@ -1,1 +1,1 @@
-// Versión local de Chart.js - simulada por ahora
+// Aquí iría Chart.js minificado (para proyecto real usar archivo real de la librería)
