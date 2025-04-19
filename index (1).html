@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiDiabetes360 🧠❤️</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>MiDiabetes360 🧠❤️</h1>
+    <p>Tu médico digital diario para entender tu salud y tus hábitos</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>¿Cuál es tu nivel de glucosa de hoy?</h2>
+      <div class="reference">
+        <strong>Referencia:</strong>
+        <ul>
+          <li>✅ Normal: 70 - 99 mg/dL</li>
+          <li>⚠️ Alerta: 100 - 125 mg/dL</li>
+          <li>🚨 Alto: 126+ mg/dL</li>
+        </ul>
+      </div>
+      <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
+
+      <label>¿Cómo te sientes?</label>
+      <select id="feeling">
+        <option value="muy bien">Muy bien</option>
+        <option value="regular">Regular</option>
+        <option value="con dolor de cabeza">Con dolor de cabeza</option>
+        <option value="alterado y corazón agitado">Alterado y corazón agitado</option>
+        <option value="con sueño y decaído">Con sueño y decaído</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="feeling-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+      <label>¿Qué comiste recientemente?</label>
+      <select id="meal">
+        <option value="arepa con queso">Arepa con queso</option>
+        <option value="arroz con pollo">Arroz con pollo</option>
+        <option value="pan dulce o pastel">Pan dulce o pastel</option>
+        <option value="fruta natural">Fruta natural</option>
+        <option value="ensalada">Ensalada</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="meal-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+      <label>Actividad reciente</label>
+      <select id="activity">
+        <option value="sedentario">Sedentario (reposo)</option>
+        <option value="caminar">Caminar</option>
+        <option value="ejercicio moderado">Ejercicio moderado</option>
+        <option value="estrés emocional">Estrés emocional</option>
+        <option value="otro">Otro (especifique)</option>
+      </select>
+      <input id="activity-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+      <button onclick="addLog()">Guardar Registro</button>
+    </section>
+
+    <section class="card">
+      <h2>Seguimiento de Glucosa</h2>
+      <canvas id="glucoseChart" height="300"></canvas>
+      <button onclick="exportPDF()">📄 Descargar PDF</button>
+    </section>
+
+    <section class="card">
+      <h2>Historial de Registros</h2>
+      <div id="history"></div>
+    </section>
+
+    <section class="card">
+      <h2>Tipos de Pruebas de Glucosa</h2>
+      <img src="https://i.ibb.co/xC17nkp/diabetes-glucose-types.jpg" alt="Tipos de pruebas de glucosa" style="max-width: 100%; border-radius: 10px;">
+      <p style="font-size: 0.9rem; margin-top: 10px;">
+        Fasting Glucose · Glucose Tolerance · Postprandial Glucose · Random Glucose
+      </p>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
