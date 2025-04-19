@@ -95,7 +95,9 @@ function renderChart() {
   const canvas = document.getElementById('glucoseChart');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  if (window.glucoseChart) window.glucoseChart.destroy();
+  if (window.glucoseChart && typeof window.glucoseChart.destroy === 'function') {
+    window.glucoseChart.destroy();
+  }
   window.glucoseChart = new Chart(ctx, {
     type: 'line',
     data: {
