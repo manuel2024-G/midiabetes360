@@ -60,9 +60,7 @@ button:hover {
 #history .entry {
   border-top: 1px solid #ddd;
   padding: 10px 0;
-}
-#history .entry:last-child {
-  border-bottom: 1px solid #ddd;
+  position: relative;
 }
 .entry strong {
   color: #0a1f44;
@@ -71,6 +69,25 @@ button:hover {
   margin: 4px 0;
   font-size: 0.95rem;
   color: #555;
+}
+.entry .status {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  margin-left: 8px;
+}
+.status-normal {
+  background-color: #d4edda;
+  color: #155724;
+}
+.status-alerta {
+  background-color: #fff3cd;
+  color: #856404;
+}
+.status-alto {
+  background-color: #f8d7da;
+  color: #721c24;
 }
 .glucose-row {
   display: flex;
@@ -86,4 +103,14 @@ button:hover {
   border-radius: 8px;
   font-size: 0.9rem;
   color: #333;
+}
+.delete-btn {
+  position: absolute;
+  top: 8px;
+  right: 0;
+  background: transparent;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  cursor: pointer;
 }

@@ -10,6 +10,12 @@ document.getElementById('activity').addEventListener('change', (e) => {
   document.getElementById('activity-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
 });
 
+function getStatus(glucose) {
+  if (glucose <= 99) return { class: 'status-normal', text: '✅ Nivel normal' };
+  if (glucose <= 125) return { class: 'status-alerta', text: '⚠️ Nivel de alerta' };
+  return { class: 'status-alto', text: '🚨 Nivel alto, consulte a su médico' };
+}
+
 function addLog() {
   const glucose = parseInt(document.getElementById('glucose').value);
   if (!glucose) return alert('Por favor, ingresa tu nivel de glucosa.');
@@ -41,14 +47,26 @@ function addLog() {
   renderChart();
 }
 
+function deleteEntry(id) {
+  if (confirm('¿Estás seguro que deseas eliminar este registro?')) {
+    log = log.filter(e => e.id !== id);
+    localStorage.setItem('glucoseLog', JSON.stringify(log));
+    renderLog();
+    renderChart();
+  }
+}
+
 function renderLog() {
   const history = document.getElementById('history');
   history.innerHTML = '';
   log.slice().reverse().forEach(entry => {
+    const status = getStatus(entry.glucose);
     const div = document.createElement('div');
     div.className = 'entry';
     div.innerHTML = `
-      <strong>${entry.timestamp}</strong><br>
+      <button class="delete-btn" onclick="deleteEntry(${entry.id})">🗑️</button>
+      <strong>${entry.timestamp}</strong> 
+      <span class="status ${status.class}">${status.text}</span><br>
       Glucosa: <span>${entry.glucose} mg/dL</span><br>
       Estado: ${entry.feeling}<br>
       Comida reciente: ${entry.meal}<br>
