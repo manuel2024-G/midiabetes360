@@ -5,10 +5,75 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MiDiabetes360 - Panel</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f0f4f8;
+      color: #0a1f44;
+    }
+    header {
+      background-color: #0a1f44;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .profile-pic {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      border: 2px solid white;
+      margin: 10px auto;
+      overflow: hidden;
+    }
+    .container {
+      max-width: 700px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0a1f44;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #133366;
+    }
+    canvas {
+      max-width: 100%;
+      height: auto;
+      margin: 20px 0;
+      display: block;
+    }
+    .box, .recommendation {
+      background: #eef6fb;
+      padding: 15px;
+      margin-top: 15px;
+      border-radius: 10px;
+    }
+    #logo {
+      display: block;
+      margin: 20px auto;
+      width: 150px;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -36,7 +101,7 @@
       <option value="con dolor de cabeza">Con dolor de cabeza</option>
       <option value="otro">Otro (especifique)</option>
     </select>
-    <input type="text" id="feeling-other" placeholder="Especifique..." style="display:none;">
+    <input type="text" id="feeling-other" style="display:none;" placeholder="Especifique...">
     <label>¿Qué comiste recientemente?</label>
     <select id="meal">
       <option value="arepa con queso">Arepa con queso</option>
@@ -45,7 +110,7 @@
       <option value="ensalada">Ensalada</option>
       <option value="otro">Otro (especifique)</option>
     </select>
-    <input type="text" id="meal-other" placeholder="Especifique..." style="display:none;">
+    <input type="text" id="meal-other" style="display:none;" placeholder="Especifique...">
     <label>Actividad reciente</label>
     <select id="activity">
       <option value="reposo">Reposo</option>
@@ -54,14 +119,14 @@
       <option value="estrés emocional">Estrés emocional</option>
       <option value="otro">Otro (especifique)</option>
     </select>
-    <input type="text" id="activity-other" placeholder="Especifique..." style="display:none;">
+    <input type="text" id="activity-other" style="display:none;" placeholder="Especifique...">
 
     <button onclick="addLog()">Guardar Registro</button>
     <button onclick="generatePDF()">📄 Descargar PDF</button>
 
     <div id="pdfArea">
-      <img id="logo" src="logo.png" alt="Logo MiDiabetes360" style="width: 160px; display: block; margin: 0 auto;">
-      <canvas id="glucoseChart" width="600" height="300"></canvas>
+      <img id="logo" src="logo.png" alt="Logo MiDiabetes360">
+      <canvas id="glucoseChart" width="580" height="300"></canvas>
       <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
       <div class="recommendation" id="recommendationBox">Aquí aparecerán las recomendaciones médicas.</div>
     </div>
@@ -69,6 +134,7 @@
     <h3>Historial</h3>
     <div id="history"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
