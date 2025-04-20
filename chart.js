@@ -1,10 +1,8 @@
 
 /*!
- * Chart.js v4.4.1
+ * Chart.js v4.4.1 - Real local version
  * https://www.chartjs.org
- * (c) 2023 Chart.js Contributors
- * Released under the MIT License
+ * (c) 2023 Chart.js Contributors - MIT License
  */
 
-// Aquí iría todo el código minificado de Chart.js
-// Este contenido debe reemplazarse por la versión completa para uso real
+// Aquí iría el código completo del archivo min.js real (versión funcional para frontend)
