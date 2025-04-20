@@ -149,7 +149,12 @@
     document.getElementById("userGreeting").textContent = "Hola " + user.name + " 👋";
   }
   if (user?.foto) {
-    document.getElementById("userPhoto").innerHTML = user.foto;
+    const img = new Image();
+    img.src = user.foto.match(/src="([^"]*)"/)?.[1] || "";
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    document.getElementById("userPhoto").appendChild(img);
   }
 
   let log = JSON.parse(localStorage.getItem('glucoseLog')) || [];
@@ -171,9 +176,9 @@
   }
 
   function getRecommendation(avg) {
-    if (avg <= 99) return "✅ Tu glucosa está en un rango normal. Sigue con buenos hábitos y revisiones regulares.";
-    if (avg <= 125) return "⚠️ Precaución: comienza a reducir azúcares, hacer ejercicio y monitorear más seguido.";
-    return "🚨 Atención: niveles altos sostenidos requieren valoración médica. Consulta con tu doctor.";
+    if (avg <= 99) return "✅ Todo en orden. Mantén una dieta balanceada, hidrátate bien, haz ejercicio suave y monitorea tu glucosa cada 48 horas para prevención efectiva."
+    if (avg <= 125) return "⚠️ Estás en un rango de alerta. Evita alimentos procesados, bebe infusiones de canela y camina al menos 30 minutos diarios. Repite medición en 24 horas."
+    return "🚨 Nivel crítico. Considera atención médica inmediata. Puedes tomar agua con limón, evitar carbohidratos simples y descansar bien. Inicia registro cada 6-8 horas."
   }
 
   function getAverage() {
