@@ -149,6 +149,21 @@
 
   <script>
     const user = JSON.parse(localStorage.getItem("userSession"));
+    if (user?.name) {
+      document.getElementById("userGreeting").textContent = "Hola " + user.name + " 👋";
+    } else {
+      console.warn("No se encontró userSession, usando saludo genérico.");
+    }
+    if (user?.foto) {
+      document.getElementById("userPhoto").innerHTML = user.foto;
+    }
+    if (user?.name) {
+      document.getElementById("userGreeting").textContent = "Hola " + user.name + " 👋";
+    }
+    if (user?.foto) {
+      document.getElementById("userPhoto").innerHTML = user.foto;
+    }
+    const user = JSON.parse(localStorage.getItem("userSession"));
     document.getElementById("userGreeting").textContent = "Hola " + user?.name + " 👋";
     if (user?.foto) {
       document.getElementById("userPhoto").innerHTML = user.foto;
