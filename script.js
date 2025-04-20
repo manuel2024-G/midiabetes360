@@ -1,1 +1,1 @@
-console.log('Script principal cargado');
+console.log('Script cargado');
