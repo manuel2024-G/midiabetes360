@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Panel - MiDiabetes360</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8fa;
+      margin: 0;
+      padding: 0;
+      color: #0a1f44;
+    }
+    header {
+      background: #0a1f44;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+      text-align: center;
+    }
+    button {
+      margin-top: 20px;
+      background: #0a1f44;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #133366;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>MiDiabetes360 🧠❤️</h1>
+    <p id="userGreeting">Cargando datos del paciente...</p>
+  </header>
+
+  <div class="container">
+    <p>¡Bienvenido a tu panel! Aquí pronto podrás registrar tus niveles de glucosa, ver gráficos y recibir recomendaciones.</p>
+    <button onclick="cerrarSesion()">🔒 Cerrar sesión</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("userSession"));
+    if (user && user.name) {
+      document.getElementById("userGreeting").textContent = "Hola " + user.name + " 👋";
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem("userSession");
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
