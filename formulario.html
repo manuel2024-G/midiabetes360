@@ -1,0 +1,316 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>MiDiabetes360 - Panel del Paciente</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f5f8fa;
+      margin: 0;
+      padding: 0;
+      color: #0a1f44;
+    }
+    header {
+      background: #0a1f44;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+    .container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    }
+    h2 {
+      margin-top: 0;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    button {
+      background: #0a1f44;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #133366;
+    }
+    .entry {
+      padding: 10px;
+      margin-top: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    canvas {
+      margin-top: 20px;
+      width: 100%;
+      height: 300px;
+    }
+    .reference-box {
+      background: #eef6fb;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+    .recommendation {
+      margin-top: 15px;
+      padding: 12px;
+      background: #f0fdf4;
+      border-left: 5px solid #0a1f44;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header style="background: #0a1f44; color: white; padding: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+      <div style="text-align: left;">
+        <h1 style="margin: 0;">MiDiabetes360 🧠❤️</h1>
+        <p id="userGreeting" style="margin: 0;">Hola paciente</p>
+      </div>
+      <div class="profile-pic" id="userPhoto" style="width: 60px; height: 60px; border-radius: 50%; overflow: hidden; border: 2px solid white; background: #eee;">
+        <!-- Aquí se colocará la foto del usuario -->
+      </div>
+    </div>
+  </header>
+    
+  </header>
+
+  <div class="container">
+    <h2>Registrar Nivel de Glucosa</h2>
+    <div class="reference-box">
+      <strong>Referencia:</strong>
+      <ul>
+        <li style="color: green;">✅ Normal: 70 - 99 mg/dL</li>
+        <li style="color: orange;">⚠️ Alerta: 100 - 125 mg/dL</li>
+        <li style="color: red;">🚨 Alto: 126+ mg/dL</li>
+      </ul>
+    </div>
+
+    <label><strong>Favor coloca tu nivel de glucosa acá abajo</strong></label>
+    <input type="number" id="glucose" placeholder="Nivel actual (mg/dL)">
+    <label>¿Cómo te sientes?</label>
+    <select id="feeling">
+      <option value="muy bien">Muy bien</option>
+      <option value="regular">Regular</option>
+      <option value="con dolor de cabeza">Con dolor de cabeza</option>
+      <option value="alterado y corazón agitado">Alterado y corazón agitado</option>
+      <option value="con sueño y decaído">Con sueño y decaído</option>
+      <option value="otro">Otro (especifique)</option>
+    </select>
+    <input id="feeling-other" placeholder="Especifique si eligió Otro" style="display:none;">
+    
+    <label>¿Qué comiste recientemente?</label>
+    <select id="meal">
+      <option value="arepa con queso">Arepa con queso</option>
+      <option value="arroz con pollo">Arroz con pollo</option>
+      <option value="pan dulce o pastel">Pan dulce o pastel</option>
+      <option value="fruta natural">Fruta natural</option>
+      <option value="ensalada">Ensalada</option>
+      <option value="otro">Otro (especifique)</option>
+    </select>
+    <input id="meal-other" placeholder="Especifique si eligió Otro" style="display:none;">
+    
+    <label>Actividad reciente</label>
+    <select id="activity">
+      <option value="sedentario">Sedentario (reposo)</option>
+      <option value="caminar">Caminar</option>
+      <option value="ejercicio moderado">Ejercicio moderado</option>
+      <option value="estrés emocional">Estrés emocional</option>
+      <option value="otro">Otro (especifique)</option>
+    </select>
+    <input id="activity-other" placeholder="Especifique si eligió Otro" style="display:none;">
+
+    <button onclick="addLog()">Guardar Registro</button>
+    <button onclick="generatePDF()">📄 Descargar Informe PDF</button>
+
+    <canvas id="glucoseChart"></canvas>
+
+    <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
+    <div class="recommendation" id="recommendationBox">Recomendaciones aparecerán aquí</div>
+
+    <h3>Historial de Registros</h3>
+    <div id="history"></div>
+
+    <button onclick="cerrarSesion()">🔒 Cerrar sesión</button>
+  </div>
+
+  <script>
+    const user = JSON.parse(localStorage.getItem("userSession"));
+    document.getElementById("userGreeting").textContent = "Hola " + user?.name + " 👋";
+    if (user?.foto) {
+      document.getElementById("userPhoto").innerHTML = user.foto;
+    }
+
+
+    let log = JSON.parse(localStorage.getItem("glucoseLog")) || [];
+
+    document.getElementById('meal').addEventListener('change', (e) => {
+      document.getElementById('meal-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+    });
+    document.getElementById('feeling').addEventListener('change', (e) => {
+      document.getElementById('feeling-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+    });
+    document.getElementById('activity').addEventListener('change', (e) => {
+      document.getElementById('activity-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+    });
+
+    function getStatus(glucose) {
+      if (glucose <= 99) return { class: 'normal', text: '✅ Nivel normal' };
+      if (glucose <= 125) return { class: 'alerta', text: '⚠️ Nivel de alerta' };
+      return { class: 'alto', text: '🚨 Nivel alto, consulte a su médico' };
+    }
+
+    function clearForm() {
+      document.getElementById('glucose').value = '';
+      document.getElementById('feeling').value = 'muy bien';
+      document.getElementById('meal').value = 'arepa con queso';
+      document.getElementById('activity').value = 'sedentario';
+      document.getElementById('feeling-other').value = '';
+      document.getElementById('meal-other').value = '';
+      document.getElementById('activity-other').value = '';
+      document.getElementById('feeling-other').style.display = 'none';
+      document.getElementById('meal-other').style.display = 'none';
+      document.getElementById('activity-other').style.display = 'none';
+    }
+
+    function addLog() {
+      const glucose = parseInt(document.getElementById('glucose').value);
+      if (!glucose) return alert('Por favor, ingresa tu nivel de glucosa.');
+
+      const feeling = document.getElementById('feeling').value === 'otro'
+        ? document.getElementById('feeling-other').value
+        : document.getElementById('feeling').value;
+
+      const meal = document.getElementById('meal').value === 'otro'
+        ? document.getElementById('meal-other').value
+        : document.getElementById('meal').value;
+
+      const activity = document.getElementById('activity').value === 'otro'
+        ? document.getElementById('activity-other').value
+        : document.getElementById('activity').value;
+
+      const entry = {
+        id: Date.now(),
+        glucose,
+        feeling,
+        meal,
+        activity,
+        timestamp: new Date().toLocaleString()
+      };
+
+      log.push(entry);
+      localStorage.setItem('glucoseLog', JSON.stringify(log));
+      renderLog();
+      renderChart();
+      clearForm();
+    }
+
+    function cerrarSesion() {
+      localStorage.removeItem("userSession");
+      window.location.href = "index.html";
+    }
+
+    function getAverage() {
+      if (!log.length) return 0;
+      return (log.reduce((acc, e) => acc + e.glucose, 0) / log.length).toFixed(1);
+    }
+
+    function showRecommendations(avg) {
+      let msg = '';
+      if (avg <= 99) {
+        msg = "✅ Tu glucosa está dentro de lo normal. Continúa con una dieta balanceada y caminatas diarias.";
+      } else if (avg <= 125) {
+        msg = "⚠️ Glucosa en nivel de alerta. Reduce el azúcar, realiza actividad física y monitorea tus valores.";
+      } else {
+        msg = "🚨 Glucosa elevada. Consulta a tu médico para ajustar tu tratamiento o medicación.";
+      }
+      document.getElementById("recommendationBox").innerText = msg;
+    }
+
+    function renderLog() {
+      const history = document.getElementById('history');
+      history.innerHTML = '';
+      log.slice().reverse().forEach(entry => {
+        const status = getStatus(entry.glucose);
+        const div = document.createElement('div');
+        div.className = 'entry';
+        div.innerHTML = `
+          <strong>${entry.timestamp}</strong> 
+          <span>${status.text}</span><br>
+          Glucosa: <span>${entry.glucose} mg/dL</span><br>
+          Estado: ${entry.feeling}<br>
+          Comida reciente: ${entry.meal}<br>
+          Actividad: ${entry.activity}
+        `;
+        history.appendChild(div);
+      });
+
+      const avg = getAverage();
+      document.getElementById("avgValue").innerText = avg;
+      showRecommendations(avg);
+    }
+
+    function renderChart() {
+      const canvas = document.getElementById('glucoseChart');
+      const ctx = canvas.getContext('2d');
+      if (window.glucoseChart) window.glucoseChart.destroy();
+      window.glucoseChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: log.map(e => e.timestamp),
+          datasets: [{
+            label: 'Nivel de Glucosa',
+            data: log.map(e => e.glucose),
+            borderColor: '#0a1f44',
+            backgroundColor: 'rgba(10,31,68,0.2)',
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: true },
+            title: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: false }
+          }
+        }
+      });
+    }
+
+    async function generatePDF() {
+      const {{ jsPDF }} = window.jspdf;
+      const doc = new jsPDF();
+
+      doc.setFontSize(16);
+      doc.text("Reporte Diario - MiDiabetes360", 20, 20);
+      doc.setFontSize(12);
+      const avg = getAverage();
+      const recommendation = document.getElementById("recommendationBox").innerText;
+
+      doc.text(`Promedio de Glucosa: ${avg} mg/dL`, 20, 35);
+      doc.text("Recomendación médica:", 20, 45);
+      doc.text(recommendation, 20, 55, {{ maxWidth: 170 }});
+      doc.save("Reporte_MiDiabetes360.pdf");
+    }
+
+    renderLog();
+    renderChart();
+  </script>
+</body>
+</html>
