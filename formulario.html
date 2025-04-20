@@ -135,6 +135,7 @@
     <button onclick="generatePDF()">📄 Descargar PDF</button>
 
     <canvas id="glucoseChart"></canvas>
+<p id="noDataMsg" style="text-align:center; color:gray;">Aún no hay datos para mostrar en el gráfico.</p>
 
     <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
     <div class="recommendation" id="recommendationBox">Aquí aparecerán las recomendaciones médicas.</div>
@@ -236,6 +237,16 @@
   }
 
   function renderChart() {
+  const canvas = document.getElementById('glucoseChart');
+  const msg = document.getElementById('noDataMsg');
+
+  if (!log.length) {
+    canvas.style.display = 'none';
+    msg.style.display = 'block';
+    return;
+  }
+  canvas.style.display = 'block';
+  msg.style.display = 'none';
     const ctx = document.getElementById('glucoseChart').getContext('2d');
     if (window.glucoseChart) window.glucoseChart.destroy();
     window.glucoseChart = new Chart(ctx, {
