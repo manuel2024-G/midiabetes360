@@ -30,12 +30,5 @@ header {
 }
 canvas {
   display: block;
-  margin: 20px auto;
-}
-.recommendation {
-  margin-top: 20px;
-  padding: 15px;
-  background: #f0fdf4;
-  border-left: 5px solid #0a1f44;
-  border-radius: 10px;
+  margin: auto;
 }
