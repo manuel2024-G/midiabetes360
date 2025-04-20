@@ -1,16 +1,15 @@
 
 body {
   font-family: 'Segoe UI', sans-serif;
-  margin: 0;
-  padding: 0;
   background: #f0f4f8;
   color: #0a1f44;
+  margin: 0;
 }
 header {
   background-color: #0a1f44;
   color: white;
-  padding: 20px;
   text-align: center;
+  padding: 20px;
 }
 .container {
   max-width: 700px;
@@ -19,4 +18,16 @@ header {
   background: white;
   border-radius: 16px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.profile-pic {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin: 10px auto;
+  overflow: hidden;
+}
+canvas {
+  display: block;
+  margin: auto;
 }

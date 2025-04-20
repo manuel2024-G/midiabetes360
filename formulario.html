@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MiDiabetes360 - Panel</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
@@ -55,12 +55,13 @@
       <option value="otro">Otro (especifique)</option>
     </select>
     <input type="text" id="activity-other" placeholder="Especifique..." style="display:none;">
+
     <button onclick="addLog()">Guardar Registro</button>
     <button onclick="generatePDF()">📄 Descargar PDF</button>
 
     <div id="pdfArea">
-      <img id="logo" src="logo.png" alt="Logo MiDiabetes360" style="width: 120px; display:block; margin: 10px auto;">
-      <canvas id="glucoseChart" style="width: 16cm; height: 10cm;"></canvas>
+      <img id="logo" src="logo.png" alt="Logo MiDiabetes360">
+      <canvas id="glucoseChart" width="570" height="250"></canvas>
       <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
       <div class="recommendation" id="recommendationBox">Aquí aparecerán las recomendaciones médicas.</div>
     </div>
@@ -68,7 +69,6 @@
     <h3>Historial</h3>
     <div id="history"></div>
   </div>
-
   <script src="script.js"></script>
 </body>
 </html>
