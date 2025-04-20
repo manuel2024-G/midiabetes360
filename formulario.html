@@ -7,6 +7,7 @@
   <title>MiDiabetes360 - Panel</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -63,9 +64,10 @@
       border-bottom: 1px solid #ddd;
     }
     canvas {
-      margin-top: 20px;
-      width: 100%;
-      height: 300px;
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin: 0 auto;
     }
     .box {
       background: #eef6fb;
@@ -79,6 +81,15 @@
       background: #f0fdf4;
       border-left: 5px solid #0a1f44;
       border-radius: 10px;
+    }
+    #pdfArea {
+      padding: 20px;
+      background: #fff;
+    }
+    #logo {
+      width: 120px;
+      display: block;
+      margin: 10px auto;
     }
   </style>
 </head>
@@ -130,9 +141,14 @@
 
     <button onclick="addLog()">Guardar Registro</button>
     <button onclick="generatePDF()">📄 Descargar PDF</button>
-    <canvas id="glucoseChart"></canvas>
-    <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
-    <div class="recommendation" id="recommendationBox">Aquí aparecerán las recomendaciones médicas.</div>
+
+    <div id="pdfArea">
+      <img id="logo" src="https://i.postimg.cc/5NbNvHcR/logo-diabetes360.png" alt="Logo MiDiabetes360">
+      <canvas id="glucoseChart"></canvas>
+      <h3>Promedio de Glucosa: <span id="avgValue">--</span> mg/dL</h3>
+      <div class="recommendation" id="recommendationBox">Aquí aparecerán las recomendaciones médicas.</div>
+    </div>
+
     <h3>Historial</h3>
     <div id="history"></div>
   </div>
@@ -171,8 +187,8 @@
 
     function getRecommendation(avg) {
       if (avg <= 99) return "✅ Todo en orden. Mantén una dieta balanceada, hidrátate bien, haz ejercicio suave y monitorea tu glucosa cada 48 horas.";
-      if (avg <= 125) return "⚠️ Estás en un rango de alerta. Evita alimentos procesados, bebe infusiones de canela y camina al menos 30 minutos diarios.";
-      return "🚨 Nivel crítico. Considera atención médica. Toma agua con limón, evita carbohidratos simples y mide tu glucosa cada 6 horas.";
+      if (avg <= 125) return "⚠️ Rango de alerta. Evita alimentos procesados, bebe infusiones de canela y camina al menos 30 minutos diarios.";
+      return "🚨 Nivel crítico. Acude al médico, evita azúcares simples, toma agua con limón y monitorea cada 6 horas.";
     }
 
     function getAverage() {
@@ -248,25 +264,19 @@
         },
         options: {
           responsive: true,
-          maintainAspectRatio: false
+          maintainAspectRatio: true
         }
       });
     }
 
-    function generatePDF() {
+    async function generatePDF() {
+      const area = document.getElementById("pdfArea");
+      const canvas = await html2canvas(area);
+      const imgData = canvas.toDataURL("image/png");
+
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
-      const avg = getAverage();
-      const msg = getRecommendation(avg);
-
-      doc.setFontSize(16);
-      doc.text("Reporte Diario - MiDiabetes360", 20, 20);
-      doc.setFontSize(12);
-      doc.text(`Fecha: ${new Date().toLocaleString()}`, 20, 35);
-      doc.text(`Promedio de Glucosa: ${avg} mg/dL`, 20, 45);
-      doc.text("Recomendación médica:", 20, 55);
-      doc.text(msg, 20, 65, { maxWidth: 170 });
-
+      doc.addImage(imgData, "PNG", 10, 10, 190, 0);
       doc.save("MiDiabetes360_Reporte.pdf");
     }
 
