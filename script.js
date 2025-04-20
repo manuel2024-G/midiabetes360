@@ -1,38 +1,51 @@
 
+import Chart from 'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.min.mjs';
+
+const user = JSON.parse(localStorage.getItem("userSession"));
+if (user?.name) {
+  document.getElementById("userGreeting").textContent = "Hola " + user.name + " 👋";
+}
+if (user?.foto) {
+  const img = new Image();
+  img.src = user.foto.match(/src="([^"]*)"/)?.[1] || "";
+  img.style.width = "100%";
+  img.style.height = "100%";
+  img.style.objectFit = "cover";
+  document.getElementById("userPhoto").appendChild(img);
+}
+
 let log = JSON.parse(localStorage.getItem('glucoseLog')) || [];
 
-document.getElementById('meal').addEventListener('change', (e) => {
-  document.getElementById('meal-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
-});
-document.getElementById('feeling').addEventListener('change', (e) => {
+document.getElementById('feeling').addEventListener('change', e => {
   document.getElementById('feeling-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
 });
-document.getElementById('activity').addEventListener('change', (e) => {
+document.getElementById('meal').addEventListener('change', e => {
+  document.getElementById('meal-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
+});
+document.getElementById('activity').addEventListener('change', e => {
   document.getElementById('activity-other').style.display = e.target.value === 'otro' ? 'block' : 'none';
 });
 
 function getStatus(glucose) {
-  if (glucose <= 99) return { class: 'status-normal', text: '✅ Nivel normal' };
-  if (glucose <= 125) return { class: 'status-alerta', text: '⚠️ Nivel de alerta' };
-  return { class: 'status-alto', text: '🚨 Nivel alto, consulte a su médico' };
+  if (glucose <= 99) return '✅ Normal';
+  if (glucose <= 125) return '⚠️ Alerta';
+  return '🚨 Alto';
 }
 
-function clearForm() {
-  document.getElementById('glucose').value = '';
-  document.getElementById('feeling').value = 'muy bien';
-  document.getElementById('meal').value = 'arepa con queso';
-  document.getElementById('activity').value = 'sedentario';
-  document.getElementById('feeling-other').value = '';
-  document.getElementById('meal-other').value = '';
-  document.getElementById('activity-other').value = '';
-  document.getElementById('feeling-other').style.display = 'none';
-  document.getElementById('meal-other').style.display = 'none';
-  document.getElementById('activity-other').style.display = 'none';
+function getRecommendation(avg) {
+  if (avg <= 99) return "✅ Todo en orden. Mantén una dieta balanceada, hidrátate bien, haz ejercicio suave y monitorea tu glucosa cada 48 horas.";
+  if (avg <= 125) return "⚠️ Estás en un rango de alerta. Evita alimentos procesados, bebe infusiones de canela y camina al menos 30 minutos diarios.";
+  return "🚨 Nivel crítico. Considera atención médica inmediata. Evita carbohidratos simples y registra tus valores cada 6-8 horas.";
 }
 
-function addLog() {
-  const glucose = parseInt(document.getElementById('glucose').value);
-  if (!glucose) return alert('Por favor, ingresa tu nivel de glucosa.');
+function getAverage() {
+  if (!log.length) return 0;
+  return (log.reduce((a, b) => a + b.glucose, 0) / log.length).toFixed(1);
+}
+
+window.addLog = function () {
+  const glucose = parseInt(document.getElementById("glucose").value);
+  if (!glucose) return alert("Ingresa un nivel de glucosa válido.");
 
   const feeling = document.getElementById('feeling').value === 'otro'
     ? document.getElementById('feeling-other').value
@@ -47,56 +60,40 @@ function addLog() {
     : document.getElementById('activity').value;
 
   const entry = {
-    id: Date.now(),
+    timestamp: new Date().toLocaleString(),
     glucose,
     feeling,
     meal,
-    activity,
-    timestamp: new Date().toLocaleString()
+    activity
   };
 
   log.push(entry);
   localStorage.setItem('glucoseLog', JSON.stringify(log));
   renderLog();
   renderChart();
-  renderAverage();
-  clearForm();
-}
-
-function deleteEntry(id) {
-  if (confirm('¿Estás seguro que deseas eliminar este registro?')) {
-    log = log.filter(e => e.id !== id);
-    localStorage.setItem('glucoseLog', JSON.stringify(log));
-    renderLog();
-    renderChart();
-    renderAverage();
-  }
-}
+};
 
 function renderLog() {
-  const history = document.getElementById('history');
-  history.innerHTML = '';
-  log.slice().reverse().forEach(entry => {
-    const status = getStatus(entry.glucose);
-    const div = document.createElement('div');
-    div.className = 'entry';
-    div.innerHTML = `
-      <button class="delete-btn" onclick="deleteEntry(${entry.id})">🗑️</button>
-      <strong>${entry.timestamp}</strong> 
-      <span class="status ${status.class}">${status.text}</span><br>
-      Glucosa: <span>${entry.glucose} mg/dL</span><br>
-      Estado: ${entry.feeling}<br>
-      Comida reciente: ${entry.meal}<br>
-      Actividad: ${entry.activity}
-    `;
-    history.appendChild(div);
+  const container = document.getElementById('history');
+  container.innerHTML = '';
+  log.slice().reverse().forEach(e => {
+    container.innerHTML += `
+      <div class="entry">
+        <strong>${e.timestamp}</strong><br>
+        Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
+        Estado: ${e.feeling}<br>
+        Comida: ${e.meal}<br>
+        Actividad: ${e.activity}
+      </div>`;
   });
+
+  const avg = getAverage();
+  document.getElementById("avgValue").textContent = avg;
+  document.getElementById("recommendationBox").textContent = getRecommendation(avg);
 }
 
 function renderChart() {
-  const canvas = document.getElementById('glucoseChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
+  const ctx = document.getElementById('glucoseChart').getContext('2d');
   if (window.glucoseChart && typeof window.glucoseChart.destroy === 'function') {
     window.glucoseChart.destroy();
   }
@@ -114,50 +111,27 @@ function renderChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { display: true },
-        title: { display: false }
-      },
-      scales: {
-        y: { beginAtZero: false }
-      }
+      maintainAspectRatio: false
     }
   });
 }
 
-function renderAverage() {
-  const avgBox = document.getElementById("glucometer");
-  const recBox = document.getElementById("recommendation");
-  if (log.length === 0) {
-    avgBox.textContent = "Promedio de Glucosa: -- mg/dL";
-    recBox.textContent = "";
-    return;
-  }
-
-  const sum = log.reduce((acc, e) => acc + e.glucose, 0);
-  const avg = Math.round(sum / log.length);
-  avgBox.textContent = `Promedio de Glucosa: ${avg} mg/dL`;
-
-  if (avg <= 99) {
-    recBox.innerHTML = "<strong>Recomendaciones:</strong> Mantén una dieta balanceada, realiza caminatas diarias, sigue hidratado, y realiza chequeos regulares.";
-  } else if (avg <= 125) {
-    recBox.innerHTML = "<strong>Recomendaciones:</strong> Reduce carbohidratos simples, haz ejercicios cardiovasculares moderados, y considera infusiones naturales como canela o jengibre.";
-  } else {
-    recBox.innerHTML = "<strong>Recomendaciones:</strong> Consulta a tu médico. Puede requerirse insulina o medicación. Evita azúcares, haz ejercicio leve y revisa tus niveles con frecuencia.";
-  }
-}
-
-function exportPDF() {
-  const canvas = document.getElementById('glucoseChart');
-  const imgData = canvas.toDataURL('image/png');
-  const { jsPDF } = window.jspdf;
-  const pdf = new jsPDF();
-  pdf.text('MiDiabetes360 - Gráfico de Glucosa', 10, 10);
-  pdf.addImage(imgData, 'PNG', 10, 20, 180, 100);
-  pdf.save('glucosa.pdf');
-}
+window.generatePDF = function () {
+  import('https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js').then(jsPDF => {
+    const { jsPDF: PDF } = jsPDF;
+    const doc = new PDF();
+    const avg = getAverage();
+    const msg = getRecommendation(avg);
+    doc.setFontSize(16);
+    doc.text("Reporte Diario - MiDiabetes360", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Fecha: ${new Date().toLocaleString()}`, 20, 35);
+    doc.text(`Promedio de Glucosa: ${avg} mg/dL`, 20, 45);
+    doc.text("Recomendación médica:", 20, 55);
+    doc.text(msg, 20, 65, { maxWidth: 170 });
+    doc.save("MiDiabetes360_Reporte.pdf");
+  });
+};
 
 renderLog();
 renderChart();
-renderAverage();
