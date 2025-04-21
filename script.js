@@ -80,7 +80,9 @@ function renderLog() {
   container.innerHTML = '';
   log.slice().reverse().forEach(e => {
     container.innerHTML += `
-      <div class="entry">
+        <div class="entry">` +
+        `<button onclick="deleteLog(${log.length} - ${log.indexOf(e)})">🗑️</button>` +
+        `
         <strong>${e.timestamp}</strong><br>
         Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
         Estado: ${e.feeling}<br>
@@ -113,8 +115,8 @@ function renderChart() {
     },
     options: {
       responsive: true,
-          aspectRatio: 1.5,
-      maintainAspectRatio: false
+        maintainAspectRatio: true,
+        aspectRatio: 1.5
     }
   });
 }
@@ -130,12 +132,9 @@ async function generatePDF() {
 }
 
 
-function deleteEntry(timestamp) {
-  const index = log.findIndex(e => e.timestamp === timestamp);
-  if (index > -1) {
-    log.splice(index, 1);
-    localStorage.setItem("glucoseLog", JSON.stringify(log));
-    renderLog();
-    renderChart();
-  }
+function deleteLog(index) {
+  log.splice(index, 1);
+  localStorage.setItem('glucoseLog', JSON.stringify(log));
+  renderLog();
+  renderChart();
 }
