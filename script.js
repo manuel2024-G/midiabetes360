@@ -113,6 +113,7 @@ function renderChart() {
     },
     options: {
       responsive: true,
+          aspectRatio: 1.5,
       maintainAspectRatio: false
     }
   });
@@ -126,4 +127,15 @@ async function generatePDF() {
   const doc = new jsPDF();
   doc.addImage(imgData, "PNG", 10, 10, 190, 0);
   doc.save("MiDiabetes360_Reporte.pdf");
+}
+
+
+function deleteEntry(timestamp) {
+  const index = log.findIndex(e => e.timestamp === timestamp);
+  if (index > -1) {
+    log.splice(index, 1);
+    localStorage.setItem("glucoseLog", JSON.stringify(log));
+    renderLog();
+    renderChart();
+  }
 }
