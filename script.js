@@ -116,6 +116,10 @@ function renderChart() {
       maintainAspectRatio: false
     }
   });
+
+  document.getElementById('glucoseChart').style.maxWidth = '600px';
+  document.getElementById('glucoseChart').style.maxHeight = '300px';
+  document.getElementById('glucoseChart').style.margin = '0 auto';
 }
 
 async function generatePDF() {
