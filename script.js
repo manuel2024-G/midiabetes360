@@ -75,19 +75,31 @@ function addLog() {
   renderChart();
 }
 
+
 function renderLog() {
   const container = document.getElementById('history');
   container.innerHTML = '';
-  log.slice().reverse().forEach(e => {
-    container.innerHTML += `
-        <div class="entry">` +
-        `<button onclick="deleteLog(${log.length} - ${log.indexOf(e)})">🗑️</button>` +
-        `
-        <strong>${e.timestamp}</strong><br>
-        Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
-        Estado: ${e.feeling}<br>
-        Comida: ${e.meal}<br>
-        Actividad: ${e.activity}
+  log.forEach((e, index) => {
+    const entryDiv = document.createElement('div');
+    entryDiv.className = 'entry';
+    entryDiv.innerHTML = `
+      <strong>${e.timestamp}</strong><br>
+      Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
+      Estado: ${e.feeling}<br>
+      Comida: ${e.meal}<br>
+      Actividad: ${e.activity}
+      <button onclick="deleteLog(${index})" style="float:right;background:none;border:none;cursor:pointer;" title="Eliminar">
+        🗑️
+      </button>
+    `;
+    container.appendChild(entryDiv);
+  });
+
+  const avg = getAverage();
+  document.getElementById("avgValue").textContent = avg;
+  document.getElementById("recommendationBox").textContent = getRecommendation(avg);
+}
+
       </div>`;
   });
 
