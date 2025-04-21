@@ -92,6 +92,20 @@ function renderLog() {
   const avg = getAverage();
   document.getElementById("avgValue").textContent = avg;
   document.getElementById("recommendationBox").textContent = getRecommendation(avg);
+
+  // Botón de papelera
+  const clearBtn = document.createElement("button");
+  clearBtn.textContent = "🗑️ Borrar Historial";
+  clearBtn.style.backgroundColor = "#ff4d4d";
+  clearBtn.style.color = "white";
+  clearBtn.style.marginTop = "10px";
+  clearBtn.onclick = () => {
+    if (confirm("¿Seguro que deseas borrar todo el historial?")) {
+      localStorage.removeItem("glucoseLog");
+      location.reload();
+    }
+  };
+  container.appendChild(clearBtn);
 }
 
 function renderChart() {
@@ -116,10 +130,6 @@ function renderChart() {
       maintainAspectRatio: false
     }
   });
-
-  document.getElementById('glucoseChart').style.maxWidth = '600px';
-  document.getElementById('glucoseChart').style.maxHeight = '300px';
-  document.getElementById('glucoseChart').style.margin = '0 auto';
 }
 
 async function generatePDF() {
