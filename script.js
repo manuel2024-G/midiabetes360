@@ -78,35 +78,35 @@ function addLog() {
 function renderLog() {
   const container = document.getElementById('history');
   container.innerHTML = '';
-  log.slice().reverse().forEach((e, index) => {
-    container.innerHTML += `
+  log.slice().reverse().forEach((e, i) => {
+    container.innerHTML += \`
       <div class="entry">
         <strong>${e.timestamp}</strong><br>
         Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
         Estado: ${e.feeling}<br>
         Comida: ${e.meal}<br>
         Actividad: ${e.activity}
-      </div>`;
+      </div>\`;
   });
 
   const avg = getAverage();
   document.getElementById("avgValue").textContent = avg;
   document.getElementById("recommendationBox").textContent = getRecommendation(avg);
 
-  if (log.length > 0 && !document.getElementById("clearHistory")) {
-    const btn = document.createElement("button");
-    btn.textContent = "🗑️ Borrar Historial";
-    btn.id = "clearHistory";
-    btn.style.background = "#c0392b";
-    btn.style.color = "white";
-    btn.style.marginTop = "10px";
-    btn.onclick = () => {
-      if (confirm("¿Seguro que deseas borrar todo el historial?")) {
+  if (!document.getElementById("clearHistoryBtn")) {
+    const clearBtn = document.createElement("button");
+    clearBtn.textContent = "🗑️ Borrar Historial";
+    clearBtn.id = "clearHistoryBtn";
+    clearBtn.style.marginTop = "10px";
+    clearBtn.onclick = () => {
+      if (confirm("¿Estás seguro de que deseas borrar todo el historial?")) {
         localStorage.removeItem("glucoseLog");
-        location.reload();
+        log.length = 0;
+        renderLog();
+        renderChart();
       }
     };
-    container.appendChild(btn);
+    container.parentElement.appendChild(clearBtn);
   }
 }
 
@@ -129,7 +129,10 @@ function renderChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false
+      maintainAspectRatio: false,
+      layout: {
+        padding: 10
+      }
     }
   });
 }
