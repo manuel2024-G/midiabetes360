@@ -78,36 +78,20 @@ function addLog() {
 function renderLog() {
   const container = document.getElementById('history');
   container.innerHTML = '';
-  log.slice().reverse().forEach((e, i) => {
-    container.innerHTML += \`
+  log.slice().reverse().forEach(e => {
+    container.innerHTML += `
       <div class="entry">
         <strong>${e.timestamp}</strong><br>
         Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
         Estado: ${e.feeling}<br>
         Comida: ${e.meal}<br>
         Actividad: ${e.activity}
-      </div>\`;
+      </div>`;
   });
 
   const avg = getAverage();
   document.getElementById("avgValue").textContent = avg;
   document.getElementById("recommendationBox").textContent = getRecommendation(avg);
-
-  if (!document.getElementById("clearHistoryBtn")) {
-    const clearBtn = document.createElement("button");
-    clearBtn.textContent = "🗑️ Borrar Historial";
-    clearBtn.id = "clearHistoryBtn";
-    clearBtn.style.marginTop = "10px";
-    clearBtn.onclick = () => {
-      if (confirm("¿Estás seguro de que deseas borrar todo el historial?")) {
-        localStorage.removeItem("glucoseLog");
-        log.length = 0;
-        renderLog();
-        renderChart();
-      }
-    };
-    container.parentElement.appendChild(clearBtn);
-  }
 }
 
 function renderChart() {
@@ -129,10 +113,7 @@ function renderChart() {
     },
     options: {
       responsive: true,
-      maintainAspectRatio: false,
-      layout: {
-        padding: 10
-      }
+      maintainAspectRatio: false
     }
   });
 }
@@ -141,6 +122,7 @@ async function generatePDF() {
   const area = document.getElementById("pdfArea");
   const canvas = await html2canvas(area);
   const imgData = canvas.toDataURL("image/png");
+
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
   doc.addImage(imgData, "PNG", 10, 10, 190, 0);
