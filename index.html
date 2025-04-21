@@ -8,60 +8,61 @@
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f0f4f8;
       margin: 0;
       padding: 0;
+      background: #f0f4f8;
     }
     header {
-      background-color: #0a1f44;
+      background: #0a1f44;
       color: white;
       padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    header h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      flex: 1 0 60%;
       text-align: center;
-      position: relative;
     }
     .profile-pic {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      width: 70px;
-      height: 70px;
+      width: 60px;
+      height: 60px;
       border-radius: 50%;
       border: 2px solid white;
-      background: #eee;
       overflow: hidden;
-    }
-    .profile-pic img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
+      background: #ccc;
+      margin-top: 10px;
     }
     .container {
       max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
+      margin: auto;
       background: white;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-    input, select, button {
-      width: 100%;
-      padding: 12px;
-      margin-top: 10px;
-      border: 1px solid #ccc;
+      padding: 20px;
+      box-shadow: 0 5px 10px rgba(0,0,0,0.1);
       border-radius: 8px;
     }
+    input, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
     button {
-      background-color: #0a1f44;
+      background: #0a1f44;
       color: white;
       font-weight: bold;
-      cursor: pointer;
+      border: none;
     }
     button:hover {
-      background-color: #133366;
+      background: #133366;
+    }
+    #cameraContainer {
+      text-align: center;
+      margin-top: 10px;
     }
   </style>
 </head>
@@ -69,107 +70,57 @@
 
 <header>
   <h1>Bienvenidos al Sistema MiDiabetes360</h1>
-  <div class="profile-pic" id="previewContainer"></div>
+  <div class="profile-pic" id="photoPreview"></div>
 </header>
 
 <div class="container">
-  <label>Nombre y Apellido</label>
-  <input type="text" id="nombre">
-
-  <label>Sexo</label>
-  <select id="sexo">
-    <option value="Masculino">Masculino</option>
-    <option value="Femenino">Femenino</option>
+  <input type="text" placeholder="Nombre y Apellido">
+  <select>
+    <option value="">Sexo</option>
+    <option value="M">Masculino</option>
+    <option value="F">Femenino</option>
   </select>
-
-  <label>Edad</label>
-  <input type="number" id="edad">
-
-  <label>Correo electrónico</label>
-  <input type="email" id="email">
+  <input type="number" placeholder="Edad">
+  <input type="email" placeholder="Correo electrónico">
 
   <label>Sube una Foto</label>
-  <input type="file" accept="image/*" id="foto" onchange="previewPhoto(event)">
+  <input type="file" accept="image/*" id="photoInput">
 
-  <button onclick="activarCamara()">📷 Activar Cámara</button>
-  <video id="video" width="100%" autoplay style="display:none;"></video>
-  <canvas id="canvas" style="display:none;"></canvas>
-  <button onclick="capturarFoto()" style="display:none;" id="btnCaptura">📸 Tomar Selfie</button>
+  <div id="cameraContainer">
+    <button onclick="activarCamara()">📷 Activar Cámara</button>
+  </div>
 
   <button onclick="generarCodigo()">🔐 Generar Código</button>
+  <input type="text" id="codigo" maxlength="5" placeholder="Coloca el código aleatorio que te dimos en este campo de 5 dígitos">
 
-  <label>Código de acceso (5 dígitos)
-<input type="text" id="codeInput" maxlength="5" placeholder="Ingrese el código aquí"></label>
-  <input type="text" id="codigo" maxlength="5" placeholder="Coloca el código aleatorio que te dimos en este campo de 5 dígitos"/>
-
-  <button onclick="validarCodigo()">Ingresar</button>
+  <button onclick="redirigir()">Ingresar</button>
 </div>
 
 <script>
-  let codigoGenerado = "";
-
-  function previewPhoto(event) {
-    const file = event.target.files[0];
+  document.getElementById('photoInput').addEventListener('change', function(e) {
+    const file = e.target.files[0];
     const reader = new FileReader();
-    reader.onload = function(e) {
-      localStorage.setItem("userPhoto", e.target.result);
-      document.getElementById("previewContainer").innerHTML = '<img src="' + e.target.result + '" />';
+    reader.onload = function(event) {
+      document.getElementById("photoPreview").style.backgroundImage = `url('${event.target.result}')`;
+      document.getElementById("photoPreview").style.backgroundSize = "cover";
+      document.getElementById("photoPreview").style.backgroundPosition = "center";
     };
     if (file) reader.readAsDataURL(file);
+  });
+
+  function generarCodigo() {
+    const codigo = Math.floor(10000 + Math.random() * 90000);
+    document.getElementById('codigo').value = codigo;
+  }
+
+  function redirigir() {
+    window.location.href = "formulario.html";
   }
 
   function activarCamara() {
-    const video = document.getElementById("video");
-    const btn = document.getElementById("btnCaptura");
-    navigator.mediaDevices.getUserMedia({ video: true }).then(stream => {
-      video.srcObject = stream;
-      video.style.display = "block";
-      btn.style.display = "block";
-    }).catch(err => alert("No se pudo acceder a la cámara."));
-  }
-
-  function capturarFoto() {
-    const video = document.getElementById("video");
-    const canvas = document.getElementById("canvas");
-    const context = canvas.getContext("2d");
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imgData = canvas.toDataURL("image/png");
-    localStorage.setItem("userPhoto", imgData);
-    document.getElementById("previewContainer").innerHTML = '<img src="' + imgData + '" />';
-    video.style.display = "none";
-    document.getElementById("btnCaptura").style.display = "none";
-    video.srcObject.getTracks().forEach(track => track.stop());
-  }
-
-  function generarCodigo() {
-    codigoGenerado = Math.floor(10000 + Math.random() * 90000).toString();
-    alert("Tu código es: " + codigoGenerado);
-  }
-
-  function validarCodigo() {
-    const codigo = document.getElementById("codigo").value;
-    if (codigo === codigoGenerado) {
-      const usuario = {
-        name: document.getElementById("nombre").value,
-        sexo: document.getElementById("sexo").value,
-        edad: document.getElementById("edad").value,
-        email: document.getElementById("email").value,
-        foto: localStorage.getItem("userPhoto")
-      };
-      localStorage.setItem("userSession", JSON.stringify(usuario));
-      window.location.href = "formulario.html";
-    } else {
-      alert("Código incorrecto. Intenta nuevamente.");
-    }
-  }
-
-  // Mostrar imagen si ya está en localStorage
-  const imgPrev = localStorage.getItem("userPhoto");
-  if (imgPrev) {
-    document.getElementById("previewContainer").innerHTML = '<img src="' + imgPrev + '" />';
+    alert("Funcionalidad de cámara no implementada aún.");
   }
 </script>
+
 </body>
 </html>
