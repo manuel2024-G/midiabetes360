@@ -125,6 +125,6 @@ async function generatePDF() {
 
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.addImage(imgData, "PNG", 10, 10, 190, 0);
+  doc.addImage(imgData, "PNG", 10, 10, 190, 100);
   doc.save("MiDiabetes360_Reporte.pdf");
 }
