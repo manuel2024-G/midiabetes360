@@ -78,7 +78,7 @@ function addLog() {
 function renderLog() {
   const container = document.getElementById('history');
   container.innerHTML = '';
-  log.slice().reverse().forEach(e => {
+  log.slice().reverse().forEach((e, index) => {
     container.innerHTML += `
       <div class="entry">
         <strong>${e.timestamp}</strong><br>
@@ -93,19 +93,21 @@ function renderLog() {
   document.getElementById("avgValue").textContent = avg;
   document.getElementById("recommendationBox").textContent = getRecommendation(avg);
 
-  // Botón de papelera
-  const clearBtn = document.createElement("button");
-  clearBtn.textContent = "🗑️ Borrar Historial";
-  clearBtn.style.backgroundColor = "#ff4d4d";
-  clearBtn.style.color = "white";
-  clearBtn.style.marginTop = "10px";
-  clearBtn.onclick = () => {
-    if (confirm("¿Seguro que deseas borrar todo el historial?")) {
-      localStorage.removeItem("glucoseLog");
-      location.reload();
-    }
-  };
-  container.appendChild(clearBtn);
+  if (log.length > 0 && !document.getElementById("clearHistory")) {
+    const btn = document.createElement("button");
+    btn.textContent = "🗑️ Borrar Historial";
+    btn.id = "clearHistory";
+    btn.style.background = "#c0392b";
+    btn.style.color = "white";
+    btn.style.marginTop = "10px";
+    btn.onclick = () => {
+      if (confirm("¿Seguro que deseas borrar todo el historial?")) {
+        localStorage.removeItem("glucoseLog");
+        location.reload();
+      }
+    };
+    container.appendChild(btn);
+  }
 }
 
 function renderChart() {
