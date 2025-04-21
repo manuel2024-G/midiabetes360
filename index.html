@@ -20,6 +20,10 @@
       position: relative;
     }
     .profile-pic {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+
       position: absolute;
       top: 20px;
       right: 20px;
@@ -94,7 +98,8 @@
 
   <button onclick="generarCodigo()">🔐 Generar Código</button>
 
-  <label>Código de acceso (5 dígitos)</label>
+  <label>Código de acceso (5 dígitos)
+<input type="text" id="codeInput" maxlength="5" placeholder="Ingrese el código aquí"></label>
   <input type="text" id="codigo" maxlength="5" placeholder="Coloca el código aleatorio que te dimos en este campo de 5 dígitos"/>
 
   <button onclick="validarCodigo()">Ingresar</button>
