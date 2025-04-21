@@ -2,107 +2,136 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MiDiabetes360 - Portada</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bienvenidos al Sistema MiDiabetes360</title>
+  <link rel="stylesheet" href="style.css">
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
+      background-color: #0a1f44;
+      color: white;
+      margin: 0;
+      padding: 0;
+      text-align: center;
     }
     header {
-      background-color: #0a1f44;
-      color: white;
-      padding: 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 30px 20px 10px;
     }
-    .logo-title {
-      font-size: 24px;
-      font-weight: bold;
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
     }
-    .profile-pic {
-      width: 60px;
-      height: 60px;
+    .photo-circle {
+      width: 100px;
+      height: 100px;
       border-radius: 50%;
-      border: 2px solid white;
-      background-color: #ccc;
       overflow: hidden;
+      margin: 10px auto;
+      border: 3px solid white;
     }
-    .container {
-      max-width: 500px;
-      margin: 30px auto;
-      padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    label, input, select, button {
-      display: block;
+    .photo-circle img {
       width: 100%;
-      margin: 10px 0;
+      height: 100%;
+      object-fit: cover;
+    }
+    .form-section {
+      background: white;
+      color: #0a1f44;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 400px;
+      margin: 20px auto;
+    }
+    input, select, button {
+      width: 100%;
       padding: 10px;
-      font-size: 16px;
-      border-radius: 5px;
+      margin: 8px 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
     }
     button {
-      background-color: #0a1f44;
+      background: #0a1f44;
       color: white;
-      border: none;
+      font-weight: bold;
       cursor: pointer;
     }
     button:hover {
-      background-color: #133366;
+      background: #133366;
     }
   </style>
 </head>
 <body>
   <header>
-    <div class="logo-title">Bienvenidos al Sistema MiDiabetes360</div>
-    <div class="profile-pic" id="userPhoto"></div>
+    <h1>Bienvenidos al Sistema MiDiabetes360</h1>
+    <div class="photo-circle" id="photoPreviewContainer">
+      <img id="photoPreview" src="" alt="Foto del paciente" style="display: none;">
+    </div>
   </header>
 
-  <div class="container">
-    <label>Nombre y Apellido</label>
-    <input type="text" id="name">
-
-    <label>Sexo</label>
+  <div class="form-section">
+    <input type="text" id="name" placeholder="Nombre y Apellido">
     <select id="gender">
+      <option value="" disabled selected>Sexo</option>
       <option value="masculino">Masculino</option>
       <option value="femenino">Femenino</option>
     </select>
-
-    <label>Edad</label>
-    <input type="number" id="age">
-
-    <label>Correo electrónico</label>
-    <input type="email" id="email">
-
-    <label>Sube una Foto</label>
-    <input type="file" accept="image/*" id="photoUpload">
-
-    <button onclick="startCamera()">📷 Activar Cámara</button>
-    <button onclick="generateCode()">🔐 Generar Código</button>
-
-    <label>Código de acceso (5 dígitos)</label>
-    <input type="text" id="code" maxlength="5">
-    <p style="font-size:14px;color:#444;">Coloca el código aleatorio que te dimos en este campo de 5 dígitos</p>
-
-    <button onclick="redirect()">Ingresar</button>
+    <input type="number" id="age" placeholder="Edad">
+    <input type="email" id="email" placeholder="Correo electrónico">
+    <input type="file" id="photo" accept="image/*">
+    <button onclick="activateCamera()">📸 Selfie</button>
+    <button onclick="generateCode()">Generar Código de Acceso</button>
+    <input type="text" id="accessCode" placeholder="Coloca el código aleatorio que te dimos en este campo de 5 dígitos" maxlength="5">
+    <button onclick="enterSystem()">Ingresar al sistema</button>
   </div>
 
   <script>
+    const photoInput = document.getElementById('photo');
+    const photoPreview = document.getElementById('photoPreview');
+    const photoContainer = document.getElementById('photoPreviewContainer');
+
+    photoInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          localStorage.setItem('userPhoto', evt.target.result);
+          photoPreview.src = evt.target.result;
+          photoPreview.style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    window.onload = () => {
+      const savedPhoto = localStorage.getItem('userPhoto');
+      if (savedPhoto) {
+        photoPreview.src = savedPhoto;
+        photoPreview.style.display = 'block';
+      }
+    };
+
     function generateCode() {
       const code = Math.floor(10000 + Math.random() * 90000);
-      document.getElementById('code').value = code;
+      document.getElementById('accessCode').value = code;
+      localStorage.setItem('accessCode', code);
     }
-    function redirect() {
-      window.location.href = 'formulario.html';
+
+    function enterSystem() {
+      const name = document.getElementById('name').value;
+      const codeEntered = document.getElementById('accessCode').value;
+      const codeStored = localStorage.getItem('accessCode');
+      if (!name || !codeEntered || codeEntered !== codeStored) {
+        alert('Por favor ingresa tu nombre y el código correcto.');
+        return;
+      }
+      localStorage.setItem("userSession", JSON.stringify({ name, foto: document.getElementById("photoPreview").outerHTML }));
+      window.location.href = "formulario.html";
     }
-    function startCamera() {
-      alert("Funcionalidad de cámara aún no implementada.");
+
+    function activateCamera() {
+      alert("Función de selfie no implementada aún en esta demo.");
     }
   </script>
 </body>
