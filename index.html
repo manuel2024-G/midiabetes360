@@ -66,6 +66,15 @@
       margin-top: 10px;
     }
   </style>
+
+<script>
+  window.onload = () => {
+    const user = JSON.parse(localStorage.getItem("userSession"));
+    if (user?.name && user?.foto) {
+      window.location.href = "formulario.html";
+    }
+  };
+</script>
 </head>
 <body>
   <header>
