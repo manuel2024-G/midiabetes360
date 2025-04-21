@@ -122,9 +122,8 @@ async function generatePDF() {
   const area = document.getElementById("pdfArea");
   const canvas = await html2canvas(area);
   const imgData = canvas.toDataURL("image/png");
-
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.addImage(imgData, "PNG", 10, 10, 190, 100);
+  doc.addImage(imgData, "PNG", 10, 10, 190, 0);
   doc.save("MiDiabetes360_Reporte.pdf");
 }
