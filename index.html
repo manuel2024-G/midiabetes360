@@ -2,14 +2,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>MiDiabetes360 - Portada</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      margin: 0;
       font-family: 'Segoe UI', sans-serif;
-      background: #f0f4f8;
+      background-color: #e6f0fa;
+      margin: 0;
+      padding: 0;
     }
     header {
       background-color: #0a1f44;
@@ -19,38 +21,43 @@
       justify-content: space-between;
       align-items: center;
     }
-    .logo-title {
+    header h1 {
+      margin: 0;
       font-size: 24px;
-      font-weight: bold;
     }
-    .profile-pic {
+    .profile-preview {
       width: 60px;
       height: 60px;
       border-radius: 50%;
-      border: 2px solid white;
       background-color: #ccc;
       overflow: hidden;
+      border: 2px solid #fff;
+    }
+    .profile-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     .container {
       max-width: 500px;
+      background: white;
       margin: 30px auto;
       padding: 20px;
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
-    label, input, select, button {
-      display: block;
+    input, select, button {
       width: 100%;
+      padding: 12px;
       margin: 10px 0;
-      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
       font-size: 16px;
-      border-radius: 5px;
     }
     button {
       background-color: #0a1f44;
       color: white;
-      border: none;
+      font-weight: bold;
       cursor: pointer;
     }
     button:hover {
@@ -60,48 +67,71 @@
 </head>
 <body>
   <header>
-    <div class="logo-title">Bienvenidos al Sistema MiDiabetes360</div>
-    <div class="profile-pic" id="userPhoto"></div>
+    <h1>Bienvenidos al Sistema MiDiabetes360</h1>
+    <div class="profile-preview" id="circlePreview"></div>
   </header>
 
   <div class="container">
     <label>Nombre y Apellido</label>
-    <input type="text" id="name">
+    <input type="text" id="name" placeholder="Ej: Manuel Vega">
 
     <label>Sexo</label>
-    <select id="gender">
+    <select id="sexo">
       <option value="masculino">Masculino</option>
       <option value="femenino">Femenino</option>
     </select>
 
     <label>Edad</label>
-    <input type="number" id="age">
+    <input type="number" id="edad" placeholder="Ej: 50">
 
     <label>Correo electrónico</label>
-    <input type="email" id="email">
+    <input type="email" id="email" placeholder="ejemplo@correo.com">
 
     <label>Sube una Foto</label>
     <input type="file" accept="image/*" id="photoUpload">
 
-    <button onclick="startCamera()">📷 Activar Cámara</button>
-    <button onclick="generateCode()">🔐 Generar Código</button>
+    <button onclick="activarCamara()">📷 Activar Cámara</button>
+    <button onclick="generarCodigo()">🔐 Generar Código</button>
 
     <label>Código de acceso (5 dígitos)</label>
-    <input type="text" id="code" maxlength="5">
-    <p style="font-size:14px;color:#444;">Coloca el código aleatorio que te dimos en este campo de 5 dígitos</p>
+    <input type="text" id="codigo" maxlength="5" placeholder="Coloca el código aleatorio que te dimos">
 
-    <button onclick="redirect()">Ingresar</button>
+    <button onclick="validarIngreso()">Ingresar</button>
   </div>
 
   <script>
-    function generateCode() {
-      const code = Math.floor(10000 + Math.random() * 90000);
-      document.getElementById('code').value = code;
+    function generarCodigo() {
+      const codigo = Math.floor(10000 + Math.random() * 90000);
+      document.getElementById('codigo').value = codigo;
+      alert("Tu código aleatorio es: " + codigo);
     }
-    function redirect() {
-      window.location.href = 'formulario.html';
+
+    document.getElementById('photoUpload').addEventListener('change', function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const imgHTML = '<img src="' + e.target.result + '" />';
+          document.getElementById('circlePreview').innerHTML = imgHTML;
+          localStorage.setItem("userSession", JSON.stringify({
+            name: document.getElementById("name").value,
+            foto: imgHTML
+          }));
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    function validarIngreso() {
+      const codigo = document.getElementById("codigo").value;
+      if (codigo.length === 5) {
+        window.location.href = "formulario.html";
+      } else {
+        alert("Código inválido. Debe contener 5 dígitos.");
+      }
     }
-    function startCamera() {
+
+    function activarCamara() {
       alert("Funcionalidad de cámara aún no implementada.");
     }
   </script>
