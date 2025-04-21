@@ -80,19 +80,17 @@ function renderLog() {
   const container = document.getElementById('history');
   container.innerHTML = '';
   log.forEach((e, index) => {
-    const entryDiv = document.createElement('div');
-    entryDiv.className = 'entry';
-    entryDiv.innerHTML = `
+    const div = document.createElement('div');
+    div.className = 'entry';
+    div.innerHTML = `
       <strong>${e.timestamp}</strong><br>
       Glucosa: ${e.glucose} mg/dL (${getStatus(e.glucose)})<br>
       Estado: ${e.feeling}<br>
       Comida: ${e.meal}<br>
       Actividad: ${e.activity}
-      <button onclick="deleteLog(${index})" style="float:right;background:none;border:none;cursor:pointer;" title="Eliminar">
-        🗑️
-      </button>
+      <button onclick="deleteLog(${index})">🗑️</button>
     `;
-    container.appendChild(entryDiv);
+    container.appendChild(div);
   });
 
   const avg = getAverage();
@@ -100,13 +98,13 @@ function renderLog() {
   document.getElementById("recommendationBox").textContent = getRecommendation(avg);
 }
 
-      </div>`;
-  });
-
-  const avg = getAverage();
-  document.getElementById("avgValue").textContent = avg;
-  document.getElementById("recommendationBox").textContent = getRecommendation(avg);
+function deleteLog(index) {
+  log.splice(index, 1);
+  localStorage.setItem('glucoseLog', JSON.stringify(log));
+  renderLog();
+  renderChart();
 }
+
 
 function renderChart() {
   const ctx = document.getElementById('glucoseChart').getContext('2d');
